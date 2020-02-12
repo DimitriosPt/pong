@@ -20,9 +20,16 @@ class Bat extends GameObject {
     final int STOPPED = 0;
     final int LEFT = 1;
     final int RIGHT = 2;
+
+    // Keeps track of if an how the ball is moving
+    // Starting with STOPPED
     public int mBatMoving = STOPPED;
 
     Bat(Point screenSize){
+
+        // Bat needs to know the screen
+        // horizontal resolution
+        // Outside of this method
 
         Paint myPaint = new Paint();
         myPaint.setColor(Color.RED);

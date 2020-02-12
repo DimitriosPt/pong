@@ -48,8 +48,7 @@ class PongGame extends SurfaceView implements Runnable{
     private Ball mBall;
 
     // The current score and lives remaining
-    private int mScore = 0;
-    private int mLives = 3;
+    private Player player = new Player();
 
     // Here is the Thread and two control variables
     private Thread mGameThread = null;
@@ -137,11 +136,10 @@ class PongGame extends SurfaceView implements Runnable{
     private void startNewGame(){
 
         // Put the ball back to the starting position
-        mBall.reset(getScreenSize().x, getScreenSize().y);
+        mBall.setPosition(getScreenSize());
 
         // Rest the score and the player's chances
-        mScore = 0;
-        mLives = 3;
+        player.reset();
 
     }
 
@@ -206,7 +204,7 @@ class PongGame extends SurfaceView implements Runnable{
             // Realistic-ish bounce
             mBall.batBounce(mBat.body);
             mBall.increaseVelocity();
-            mScore++;
+            player.incrementScore();
             mSP.play(mBeepID, 1, 1, 0, 0, 1);
         }
 
@@ -216,10 +214,10 @@ class PongGame extends SurfaceView implements Runnable{
         if(mBall.body.bottom > getScreenSize().y){
             mBall.reverseYVelocity();
 
-            mLives--;
+            player.decrementLives();
             mSP.play(mMissID, 1, 1, 0, 0, 1);
 
-            if(mLives == 0){
+            if(player.getLives() == 0){
                 mPaused = true;
                 startNewGame();
             }
@@ -274,15 +272,16 @@ class PongGame extends SurfaceView implements Runnable{
             textPaint.setTextSize(mFontSize);
 
             // Draw the HUD
-            mCanvas.drawText("Score: " + mScore +
-                            "   Lives: " + mLives,
+            mCanvas.drawText("Score: " + player.getScore() +
+                            "   Lives: " + player.getLives(),
                     mFontMargin , mFontSize, textPaint);
 
             //font size had to be lowered in order to fit my long name in the top right corner
-            textPaint.setTextSize(mFontSize - 10);
+            textPaint.setTextSize(mFontSize - 19
+            );
 
             mCanvas.drawText("Dimitrios Papageorgacopoulos", getScreenSize().x / 2,
-                    getScreenSize().y / 40, textPaint);
+                    getScreenSize().y / 15, textPaint);
 
             if(DEBUGGING){
                 printDebuggingText();
@@ -298,10 +297,6 @@ class PongGame extends SurfaceView implements Runnable{
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
 
-        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-        Integer screenWidth = metrics.widthPixels;
-
-
         // This switch block replaces the
         // if statement from the Sub Hunter game
         switch (motionEvent.getAction() &
@@ -314,7 +309,7 @@ class PongGame extends SurfaceView implements Runnable{
                 mPaused = false;
 
                 // Where did the touch happen
-                if(motionEvent.getX() > screenWidth / 2){
+                if(motionEvent.getX() > getScreenSize().x / 2){
                     // On the right hand side
                     mBat.mBatMoving = mBat.RIGHT;
                 }
