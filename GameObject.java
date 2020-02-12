@@ -15,4 +15,7 @@ public abstract class GameObject {
     abstract void setSize(int screenX, int sceenY);
     abstract void updateOnScreenPosition(long fps);
 
+    public void setColor(Paint color) {
+        this.color = color;
+    }
 }

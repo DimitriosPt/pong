@@ -209,8 +209,6 @@ class PongGame extends SurfaceView implements Runnable{
     private void detectCollisions(){
         // Has the bat hit the ball?
 
-        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-        Point screenSize = new Point(metrics.widthPixels, metrics.heightPixels);
 
         if(RectF.intersects(mBat.body, mBall.body)) {
             // Realistic-ish bounce
@@ -223,7 +221,7 @@ class PongGame extends SurfaceView implements Runnable{
         // Has the ball hit the edge of the screen
 
         // Bottom
-        if(mBall.body.bottom > screenSize.y){
+        if(mBall.body.bottom > getScreenSize().y){
             mBall.reverseYVelocity();
 
             mLives--;
@@ -231,7 +229,7 @@ class PongGame extends SurfaceView implements Runnable{
 
             if(mLives == 0){
                 mPaused = true;
-                startNewGame(screenSize);
+                startNewGame(getScreenSize());
             }
         }
 
@@ -248,7 +246,7 @@ class PongGame extends SurfaceView implements Runnable{
         }
 
         // Right
-        if(mBall.body.right > screenSize.x){
+        if(mBall.body.right > getScreenSize().x){
             mBall.reverseXVelocity();
             mSP.play(mBopID, 1, 1, 0, 0, 1);
         }
@@ -258,12 +256,11 @@ class PongGame extends SurfaceView implements Runnable{
     // Draw the game objects and the HUD
     void draw() {
 
-        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-        Point screenSize = new Point(metrics.widthPixels, metrics.heightPixels);
+
         // Font is 5% (1/20th) of screen width
-        int mFontSize = screenSize.x / 20;
+        int mFontSize = getScreenSize().x / 20;
         // Margin is 1.5% (1/75th) of screen width
-        int mFontMargin = screenSize.y / 75;
+        int mFontMargin = getScreenSize().y / 75;
 
 
         if (mOurHolder.getSurface().isValid()) {
@@ -279,7 +276,7 @@ class PongGame extends SurfaceView implements Runnable{
                     (255, 255, 255, 255));
 
             // Draw the bat and ball
-            mCanvas.drawRect(mBall.body, mPaint);
+            mCanvas.drawRect(mBall.body, mBall.color);
             mCanvas.drawRect(mBat.body, mBat.color);
 
             // Choose the font size
@@ -289,6 +286,10 @@ class PongGame extends SurfaceView implements Runnable{
             mCanvas.drawText("Score: " + mScore +
                             "   Lives: " + mLives,
                     mFontMargin , mFontSize, mPaint);
+            mPaint.setTextSize(mFontSize - 10);
+
+            mCanvas.drawText("Dimitrios Papageorgacopoulos", getScreenSize().x / 2,
+                    getScreenSize().y / 50, mPaint);
 
             if(DEBUGGING){
                 printDebuggingText();
@@ -386,5 +387,11 @@ class PongGame extends SurfaceView implements Runnable{
 
         // Start the thread
         mGameThread.start();
+    }
+
+    public Point getScreenSize()
+    {
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        return new Point(metrics.widthPixels, metrics.heightPixels);
     }
 }

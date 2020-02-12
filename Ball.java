@@ -38,7 +38,7 @@ class Ball extends GameObject {
         // at the start of each game
         body = new RectF();
         Paint ballColor = new Paint();
-        ballColor.setColor(Color.MAGENTA);
+        ballColor.setColor(Color.argb(255,255, 174, 66));
         this.color = ballColor;
     }
 
