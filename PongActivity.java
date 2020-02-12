@@ -16,7 +16,7 @@ public class PongActivity extends Activity {
         Point size = new Point();
         display.getSize(size);
 
-        mPongGame = new PongGame(this, size);
+        mPongGame = new PongGame(this);
         setContentView(mPongGame);
     }
 

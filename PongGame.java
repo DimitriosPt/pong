@@ -37,11 +37,11 @@ class PongGame extends SurfaceView implements Runnable{
     private final int MILLIS_IN_SECOND = 1000;
 
     // Holds the resolution of the screen
-    private int mScreenX;
-    private int mScreenY;
-    // How big will the text be?
-    private int mFontSize;
-    private int mFontMargin;
+//    private int mScreenX;
+//    private int mScreenY;
+//    // How big will the text be?
+//    private int mFontSize;
+//    private int mFontMargin;
 
     // The game objects
     private Bat mBat;
@@ -69,7 +69,7 @@ class PongGame extends SurfaceView implements Runnable{
     // Called when this line:
     // mPongGame = new PongGame(this, size.x, size.y);
     // is executed from PongActivity
-    public PongGame(Context context, Point screenSize) {
+    public PongGame(Context context) {
         // Super... calls the parent class
         // constructor of SurfaceView
         // provided by Android
@@ -78,11 +78,9 @@ class PongGame extends SurfaceView implements Runnable{
         // Initialize these two members/fields
         // With the values passesd in as parameters
 
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        Point screenSize = new Point(metrics.widthPixels, metrics.heightPixels);
 
-        // Font is 5% (1/20th) of screen width
-        mFontSize = screenSize.x / 20;
-        // Margin is 1.5% (1/75th) of screen width
-        mFontMargin = screenSize.y / 75;
 
         // Initialize the objects
         // ready for drawing with
@@ -212,8 +210,6 @@ class PongGame extends SurfaceView implements Runnable{
         // Has the bat hit the ball?
 
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-//        int screenWidth = metrics.widthPixels;
-//        int screenHeight = metrics.heightPixels;
         Point screenSize = new Point(metrics.widthPixels, metrics.heightPixels);
 
         if(RectF.intersects(mBat.body, mBall.body)) {
@@ -261,6 +257,15 @@ class PongGame extends SurfaceView implements Runnable{
 
     // Draw the game objects and the HUD
     void draw() {
+
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        Point screenSize = new Point(metrics.widthPixels, metrics.heightPixels);
+        // Font is 5% (1/20th) of screen width
+        int mFontSize = screenSize.x / 20;
+        // Margin is 1.5% (1/75th) of screen width
+        int mFontMargin = screenSize.y / 75;
+
+
         if (mOurHolder.getSurface().isValid()) {
             // Lock the canvas (graphics memory) ready to draw
             mCanvas = mOurHolder.lockCanvas();
@@ -342,7 +347,11 @@ class PongGame extends SurfaceView implements Runnable{
     }
 
     private void printDebuggingText(){
-        int debugSize = mFontSize / 2;
+
+
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+
+        int debugSize = metrics.widthPixels / 40;
         int debugStart = 150;
         mPaint.setTextSize(debugSize);
         mCanvas.drawText("FPS: " + mFPS ,
