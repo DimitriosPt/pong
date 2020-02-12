@@ -1,5 +1,7 @@
 package c.dimitrios.papageorgacopoulos.csus.edu.pong;
 
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.RectF;
 
 class Bat extends GameObject {
@@ -8,8 +10,10 @@ class Bat extends GameObject {
     // They all have the m prefix
     // They are all private
     // because direct access is not required
-    public RectF body;
-    private float mLength;
+
+    //public RectF body;
+    // private float mLength;
+
     private float mXCoord;
     private float mBatSpeed;
     private int mScreenX;
@@ -34,24 +38,26 @@ class Bat extends GameObject {
         // horizontal resolution
         // Outside of this method
         mScreenX = screenX;
-
+        Paint myPaint = new Paint();
+        myPaint.setColor(Color.RED);
+        this.color = myPaint;
         // Configure the size of the bat based on
         // the screen resolution
         // One eighth the screen width
-        mLength = mScreenX / 8;
+        this.width = mScreenX / 8;
         // One fortieth the screen height
-        float height = screenY / 40;
+        this.height = screenY / 40;
 
         // Configure the starting locaion of the bat
         // Roughly the middle horizontally
         mXCoord = mScreenX / 2;
         // The height of the bat
         // off of the bottom of the screen
-        float mYCoord = screenY - height;
+        float mYCoord = screenY * .80f; //place the bat 10% of the way from the bottom
 
         // Initialize mRect based on the size and position
         body = new RectF(mXCoord, mYCoord,
-                mXCoord + mLength,
+                mXCoord + this.width,
                 mYCoord + height);
 
         // Configure the speed of the bat
@@ -62,8 +68,9 @@ class Bat extends GameObject {
     void setSize(int screenX, int screenY)
     {
         mScreenX = screenX;
-        mLength = mScreenX / 8;
-        float height = screenY/40;
+        //mLength = mScreenX / 8;
+        this.width = mScreenX / 8;
+        this.height = screenY/40;
     }
 
     /* This getter is useless
@@ -91,14 +98,14 @@ class Bat extends GameObject {
             mXCoord = 0;
         }
 
-        if(mXCoord + mLength > mScreenX){
-            mXCoord = mScreenX - mLength;
+        if(mXCoord + this.width > mScreenX){
+            mXCoord = mScreenX - this.width;
         }
 
         // Update mRect based on the results from
         // the previous code in update
         body.left = mXCoord;
-        body.right = mXCoord + mLength;
+        body.right = mXCoord + this.width;
     }
 
 }

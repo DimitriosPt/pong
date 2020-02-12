@@ -1,6 +1,7 @@
 package c.dimitrios.papageorgacopoulos.csus.edu.pong;
 
-
+import android.graphics.Paint;
+import android.graphics.Color;
 import android.graphics.RectF;
 
 class Ball extends GameObject {
@@ -9,12 +10,13 @@ class Ball extends GameObject {
     // They all have the m prefix
     // They are all private
     // because direct access is not required
-    public RectF body;
+
     private float mXVelocity;
     private float mYVelocity;
-    private float mBallWidth;
-    private float mBallHeight;
 
+    //private float mBallWidth;
+    // private float mBallHeight;
+    //public RectF body;
 
     // This is the constructor method.
     // It is called when by the code:
@@ -35,12 +37,15 @@ class Ball extends GameObject {
         // WE will initialize the detail
         // at the start of each game
         body = new RectF();
+        Paint ballColor = new Paint();
+        ballColor.setColor(Color.MAGENTA);
+        this.color = ballColor;
     }
 
     @Override
     void setSize(int screenX, int screenY) {
-        mBallWidth = screenX / 100;
-        mBallHeight = screenX / 100;
+        this.width = screenX / 100;
+        this.height = screenX / 100;
     }
 //
 //    // Return a reference to mRect to PongGame
@@ -62,8 +67,8 @@ class Ball extends GameObject {
 
         // Match up the bottom right corner
         // based on the size of the ball
-        body.right = body.left + mBallWidth;
-        body.bottom = body.top + mBallHeight;
+        body.right = body.left + this.width;
+        body.bottom = body.top + this.height;
     }
 
     // Reverse the vertical direction of travel
@@ -82,8 +87,8 @@ class Ball extends GameObject {
         // the rectangle which defines the ball
         body.left = x / 2;
         body.top = 0;
-        body.right = x / 2 + mBallWidth;
-        body.bottom = mBallHeight;
+        body.right = x / 2 + this.width;
+        body.bottom = this.height;
 
         // How fast will the ball travel
         // You could vary this to suit
@@ -109,7 +114,7 @@ class Ball extends GameObject {
 
         // detect the center of the ball
         float ballCenter = body.left +
-                (mBallWidth / 2);
+                (this.width / 2);
 
         // Where on the bat did the ball hit?
         float relativeIntersect = (batCenter - ballCenter);

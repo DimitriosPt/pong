@@ -3,14 +3,17 @@ package c.dimitrios.papageorgacopoulos.csus.edu.pong;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.RectF;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Build;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -66,7 +69,7 @@ class PongGame extends SurfaceView implements Runnable{
     // Called when this line:
     // mPongGame = new PongGame(this, size.x, size.y);
     // is executed from PongActivity
-    public PongGame(Context context, int x, int y) {
+    public PongGame(Context context, Point screenSize) {
         // Super... calls the parent class
         // constructor of SurfaceView
         // provided by Android
@@ -74,13 +77,12 @@ class PongGame extends SurfaceView implements Runnable{
 
         // Initialize these two members/fields
         // With the values passesd in as parameters
-        mScreenX = x;
-        mScreenY = y;
+
 
         // Font is 5% (1/20th) of screen width
-        mFontSize = mScreenX / 20;
+        mFontSize = screenSize.x / 20;
         // Margin is 1.5% (1/75th) of screen width
-        mFontMargin = mScreenX / 75;
+        mFontMargin = screenSize.y / 75;
 
         // Initialize the objects
         // ready for drawing with
@@ -89,8 +91,8 @@ class PongGame extends SurfaceView implements Runnable{
         mPaint = new Paint();
 
         // Initialize the bat and ball
-        mBall = new Ball(mScreenX);
-        mBat = new Bat(mScreenX, mScreenY);
+        mBall = new Ball(screenSize.x);
+        mBat = new Bat(screenSize.x, screenSize.y);
 
         // Prepare the SoundPool instance
         // Depending upon the version of Android
@@ -137,15 +139,15 @@ class PongGame extends SurfaceView implements Runnable{
         }
 
         // Everything is ready so start the game
-        startNewGame();
+        startNewGame(screenSize);
     }
 
     // The player has just lost
     // or is starting their first game
-    private void startNewGame(){
+    private void startNewGame(Point screenSize){
 
         // Put the ball back to the starting position
-        mBall.reset(mScreenX, mScreenY);
+        mBall.reset(screenSize.x, screenSize.y);
 
         // Rest the score and the player's chances
         mScore = 0;
@@ -208,6 +210,12 @@ class PongGame extends SurfaceView implements Runnable{
 
     private void detectCollisions(){
         // Has the bat hit the ball?
+
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+//        int screenWidth = metrics.widthPixels;
+//        int screenHeight = metrics.heightPixels;
+        Point screenSize = new Point(metrics.widthPixels, metrics.heightPixels);
+
         if(RectF.intersects(mBat.body, mBall.body)) {
             // Realistic-ish bounce
             mBall.batBounce(mBat.body);
@@ -219,7 +227,7 @@ class PongGame extends SurfaceView implements Runnable{
         // Has the ball hit the edge of the screen
 
         // Bottom
-        if(mBall.body.bottom > mScreenY){
+        if(mBall.body.bottom > screenSize.y){
             mBall.reverseYVelocity();
 
             mLives--;
@@ -227,7 +235,7 @@ class PongGame extends SurfaceView implements Runnable{
 
             if(mLives == 0){
                 mPaused = true;
-                startNewGame();
+                startNewGame(screenSize);
             }
         }
 
@@ -244,7 +252,7 @@ class PongGame extends SurfaceView implements Runnable{
         }
 
         // Right
-        if(mBall.body.right > mScreenX){
+        if(mBall.body.right > screenSize.x){
             mBall.reverseXVelocity();
             mSP.play(mBopID, 1, 1, 0, 0, 1);
         }
@@ -267,7 +275,7 @@ class PongGame extends SurfaceView implements Runnable{
 
             // Draw the bat and ball
             mCanvas.drawRect(mBall.body, mPaint);
-            mCanvas.drawRect(mBat.body, mPaint);
+            mCanvas.drawRect(mBat.body, mBat.color);
 
             // Choose the font size
             mPaint.setTextSize(mFontSize);
@@ -291,6 +299,10 @@ class PongGame extends SurfaceView implements Runnable{
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
 
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        Integer screenWidth = metrics.widthPixels;
+
+
         // This switch block replaces the
         // if statement from the Sub Hunter game
         switch (motionEvent.getAction() &
@@ -303,7 +315,7 @@ class PongGame extends SurfaceView implements Runnable{
                 mPaused = false;
 
                 // Where did the touch happen
-                if(motionEvent.getX() > mScreenX / 2){
+                if(motionEvent.getX() > screenWidth / 2){
                     // On the right hand side
                     mBat.mBatMoving = mBat.RIGHT;
                 }
