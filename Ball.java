@@ -48,7 +48,7 @@ class Ball extends GameObject {
     @Override
     void setSize(Point size) {
         this.width = size.x / 100;
-        this.height = size.y / 100;
+        this.height = size.x / 100;
     }
 //
 //    // Return a reference to mRect to PongGame
