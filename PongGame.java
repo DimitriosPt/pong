@@ -29,7 +29,7 @@ class PongGame extends SurfaceView implements Runnable{
     // These objects are needed to do the drawing
     private SurfaceHolder mOurHolder;
     private Canvas mCanvas;
-    private Paint mPaint;
+    private Paint textPaint;
 
     // How many frames per second did we get?
     private long mFPS;
@@ -70,27 +70,19 @@ class PongGame extends SurfaceView implements Runnable{
     // mPongGame = new PongGame(this, size.x, size.y);
     // is executed from PongActivity
     public PongGame(Context context) {
-        // Super... calls the parent class
-        // constructor of SurfaceView
-        // provided by Android
+
         super(context);
-
-        // Initialize these two members/fields
-        // With the values passesd in as parameters
-
-        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-        Point screenSize = new Point(metrics.widthPixels, metrics.heightPixels);
 
 
         // Initialize the objects
         // ready for drawing with
         // getHolder is a method of SurfaceView
         mOurHolder = getHolder();
-        mPaint = new Paint();
+        textPaint = new Paint();
 
         // Initialize the bat and ball
-        mBall = new Ball(screenSize.x);
-        mBat = new Bat(screenSize.x, screenSize.y);
+        mBall = new Ball(getScreenSize());
+        mBat = new Bat(getScreenSize());
 
         // Prepare the SoundPool instance
         // Depending upon the version of Android
@@ -137,15 +129,15 @@ class PongGame extends SurfaceView implements Runnable{
         }
 
         // Everything is ready so start the game
-        startNewGame(screenSize);
+        startNewGame();
     }
 
     // The player has just lost
     // or is starting their first game
-    private void startNewGame(Point screenSize){
+    private void startNewGame(){
 
         // Put the ball back to the starting position
-        mBall.reset(screenSize.x, screenSize.y);
+        mBall.reset(getScreenSize().x, getScreenSize().y);
 
         // Rest the score and the player's chances
         mScore = 0;
@@ -229,7 +221,7 @@ class PongGame extends SurfaceView implements Runnable{
 
             if(mLives == 0){
                 mPaused = true;
-                startNewGame(getScreenSize());
+                startNewGame();
             }
         }
 
@@ -256,7 +248,6 @@ class PongGame extends SurfaceView implements Runnable{
     // Draw the game objects and the HUD
     void draw() {
 
-
         // Font is 5% (1/20th) of screen width
         int mFontSize = getScreenSize().x / 20;
         // Margin is 1.5% (1/75th) of screen width
@@ -272,7 +263,7 @@ class PongGame extends SurfaceView implements Runnable{
                     (255, 26, 128, 182));
 
             // Choose a color to paint with
-            mPaint.setColor(Color.argb
+            textPaint.setColor(Color.argb
                     (255, 255, 255, 255));
 
             // Draw the bat and ball
@@ -280,16 +271,18 @@ class PongGame extends SurfaceView implements Runnable{
             mCanvas.drawRect(mBat.body, mBat.color);
 
             // Choose the font size
-            mPaint.setTextSize(mFontSize);
+            textPaint.setTextSize(mFontSize);
 
             // Draw the HUD
             mCanvas.drawText("Score: " + mScore +
                             "   Lives: " + mLives,
-                    mFontMargin , mFontSize, mPaint);
-            mPaint.setTextSize(mFontSize - 10);
+                    mFontMargin , mFontSize, textPaint);
+
+            //font size had to be lowered in order to fit my long name in the top right corner
+            textPaint.setTextSize(mFontSize - 10);
 
             mCanvas.drawText("Dimitrios Papageorgacopoulos", getScreenSize().x / 2,
-                    getScreenSize().y / 50, mPaint);
+                    getScreenSize().y / 40, textPaint);
 
             if(DEBUGGING){
                 printDebuggingText();
@@ -354,9 +347,9 @@ class PongGame extends SurfaceView implements Runnable{
 
         int debugSize = metrics.widthPixels / 40;
         int debugStart = 150;
-        mPaint.setTextSize(debugSize);
+        textPaint.setTextSize(debugSize);
         mCanvas.drawText("FPS: " + mFPS ,
-                10, debugStart + debugSize, mPaint);
+                10, debugStart + debugSize, textPaint);
 
     }
 

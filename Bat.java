@@ -1,23 +1,16 @@
 package c.dimitrios.papageorgacopoulos.csus.edu.pong;
 
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.RectF;
+import android.util.DisplayMetrics;
 
 class Bat extends GameObject {
 
-    // These are the member variables (fields)
-    // They all have the m prefix
-    // They are all private
-    // because direct access is not required
-
-    //public RectF body;
-    // private float mLength;
-
     private float mXCoord;
     private float mBatSpeed;
-    private int mScreenX;
-
 
     // These variables are public and final
     // They can be directly accessed by
@@ -27,33 +20,27 @@ class Bat extends GameObject {
     final int STOPPED = 0;
     final int LEFT = 1;
     final int RIGHT = 2;
-
-    // Keeps track of if an how the ball is moving
-    // Starting with STOPPED
     public int mBatMoving = STOPPED;
 
-    Bat(int screenX, int screenY){
+    Bat(Point screenSize){
 
-        // Bat needs to know the screen
-        // horizontal resolution
-        // Outside of this method
-        mScreenX = screenX;
         Paint myPaint = new Paint();
         myPaint.setColor(Color.RED);
         this.color = myPaint;
+
         // Configure the size of the bat based on
         // the screen resolution
         // One eighth the screen width
-        this.width = mScreenX / 8;
+        this.width = screenSize.x / 8;
         // One fortieth the screen height
-        this.height = screenY / 40;
+        this.height = screenSize.y / 40;
 
         // Configure the starting locaion of the bat
         // Roughly the middle horizontally
-        mXCoord = mScreenX / 2;
+        mXCoord = screenSize.x / 2;
         // The height of the bat
         // off of the bottom of the screen
-        float mYCoord = screenY * .80f; //place the bat 10% of the way from the bottom
+        float mYCoord = screenSize.y* .80f; //place the bat 20% of the way from the bottom
 
         // Initialize mRect based on the size and position
         body = new RectF(mXCoord, mYCoord,
@@ -63,14 +50,13 @@ class Bat extends GameObject {
         // Configure the speed of the bat
         // This code means the bat can cover the
         // width of the screen in 1 second
-        mBatSpeed = mScreenX;
+        mBatSpeed = screenSize.x;
     }
-    void setSize(int screenX, int screenY)
+    void setSize(Point screenSize)
     {
-        mScreenX = screenX;
         //mLength = mScreenX / 8;
-        this.width = mScreenX / 8;
-        this.height = screenY/40;
+        this.width = screenSize.x / 8;
+        this.height = screenSize.y / 40;
     }
 
     /* This getter is useless
@@ -82,6 +68,7 @@ class Bat extends GameObject {
 
     // Update the bat- Called each frame/loop
     void updateOnScreenPosition(long fps){
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
 
         // Move the bat based on the mBatMoving variable
         // and the speed of the previous frame
@@ -98,8 +85,8 @@ class Bat extends GameObject {
             mXCoord = 0;
         }
 
-        if(mXCoord + this.width > mScreenX){
-            mXCoord = mScreenX - this.width;
+        if(mXCoord + this.width > metrics.widthPixels){
+            mXCoord = metrics.widthPixels - this.width;
         }
 
         // Update mRect based on the results from

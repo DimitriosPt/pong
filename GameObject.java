@@ -1,7 +1,10 @@
 package c.dimitrios.papageorgacopoulos.csus.edu.pong;
 
+import android.content.res.Resources;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.RectF;
+import android.util.DisplayMetrics;
 
 public abstract class GameObject {
     public RectF body;
@@ -12,7 +15,7 @@ public abstract class GameObject {
     public Paint color;
 
 
-    abstract void setSize(int screenX, int sceenY);
+    abstract void setSize(Point size);
     abstract void updateOnScreenPosition(long fps);
 
     public void setColor(Paint color) {

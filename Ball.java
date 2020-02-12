@@ -2,6 +2,7 @@ package c.dimitrios.papageorgacopoulos.csus.edu.pong;
 
 import android.graphics.Paint;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.RectF;
 
 class Ball extends GameObject {
@@ -22,12 +23,12 @@ class Ball extends GameObject {
     // It is called when by the code:
     //  mBall = new Ball(mScreenX);
     // In the PongGame class
-    Ball(int screenX){
+    Ball(Point screenSize){
 
         // Make the ball square and 1% of screen width
         // of the screen width
 
-        setSize(screenX, screenX);
+        setSize(screenSize);
 //        mBallWidth = screenX / 100;
 //        mBallHeight = screenX / 100;
 
@@ -37,15 +38,17 @@ class Ball extends GameObject {
         // WE will initialize the detail
         // at the start of each game
         body = new RectF();
+
+        //Set Ball color
         Paint ballColor = new Paint();
         ballColor.setColor(Color.argb(255,255, 174, 66));
-        this.color = ballColor;
+        this.setColor(ballColor);
     }
 
     @Override
-    void setSize(int screenX, int screenY) {
-        this.width = screenX / 100;
-        this.height = screenX / 100;
+    void setSize(Point size) {
+        this.width = size.x / 100;
+        this.height = size.y / 100;
     }
 //
 //    // Return a reference to mRect to PongGame
